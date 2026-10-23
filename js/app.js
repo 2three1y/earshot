@@ -674,12 +674,21 @@ async function loadModels() {
     afterLoad();
   } catch (e) {
     progressSink = null;
-    $('prog-text').textContent = 'Loading stopped: ' + e.message + ' Your device voice still works.';
-    announcer.say('Loading stopped: ' + e.message + ' Your device voice still works.', { important: true });
+    const friendly = friendlyLoadError(e);
+    $('prog-text').textContent = 'Loading stopped. ' + friendly + ' Your device voice still works. (Details: ' + e.message + ')';
+    announcer.say('Loading stopped. ' + friendly + ' Your device voice still works.', { important: true });
     earcon('error');
   } finally {
     loadingNow = false; $('btn-load').disabled = false; updateSizes(); updateStatus();
   }
+}
+function friendlyLoadError(e) {
+  const m = String((e && e.message) || e);
+  if (!navigator.onLine || /fetch|network|tokenizer_class|Could not locate|Failed to load|404/i.test(m)) return 'The models could not be downloaded. Check your internet connection and try again.';
+  if (/memory|Out of memory|RangeError|allocation/i.test(m)) return 'This device ran out of memory. Try fewer models, or the Tiny Whisper model.';
+  if (/webgpu|adapter|gpu/i.test(m)) return 'WebGPU is not working in this browser, so the answer model cannot run here.';
+  if (/session/i.test(m)) return 'A model could not start in this browser.';
+  return 'Something went wrong while loading.';
 }
 function mbStr(b) { return (b / 1048576).toFixed(b > 10485760 ? 0 : 1) + ' MB'; }
 function afterLoad() {
