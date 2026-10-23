@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Starred credits: Earshot</title>
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to the credits</a>
+<header class="site-header">
+  <h1>Starred credits</h1>
+  <p class="tagline">Earshot is built from repositories Carter (2three1y) starred on GitHub. Here is every one it uses, what it does in Earshot, and its license.</p>
+  <p><a href="./">Back to Earshot</a></p>
+</header>
+<main id="main">
+  <section class="card" aria-labelledby="starred-h">
+    <h2 id="starred-h">Starred repos used</h2>
+
+    <h3>nico-martin/gemma4-browser-extension</h3>
+    <p>License: MIT. The blueprint for running AI models in the browser with Transformers.js and a web worker. Earshot uses the same runtime and the same model choices: all-MiniLM-L6-v2 for matching by meaning, and Granite 4.0 350M for short answers. <a href="https://github.com/nico-martin/gemma4-browser-extension">nico-martin/gemma4-browser-extension on GitHub</a></p>
+
+    <h3>pinguy/kokoro-tts-addon</h3>
+    <p>License: Apache-2.0. A local, offline Kokoro neural voice reader for browsers. Earshot's neural voice is the same Kokoro 82M model, and the featured voice list follows its menu. The add-on runs Kokoro on a local Python server; Earshot runs it inside the web page instead. <a href="https://github.com/pinguy/kokoro-tts-addon">pinguy/kokoro-tts-addon on GitHub</a></p>
+
+    <h3>openai/whisper</h3>
+    <p>License: MIT (code and model weights). The speech recognition models (Tiny English and Base English), used through ONNX conversions that your browser downloads from Hugging Face when you press Load voices. <a href="https://github.com/openai/whisper">openai/whisper on GitHub</a></p>
+
+    <h3>huggingface/distil-whisper</h3>
+    <p>License: MIT. Distil-Whisper Small English, the most accurate listening option. <a href="https://github.com/huggingface/distil-whisper">huggingface/distil-whisper on GitHub</a></p>
+
+    <h3>espeak-ng/espeak-ng</h3>
+    <p>License: GPL-3.0-or-later. Turns English text into the phonemes Kokoro speaks. It runs in your browser as WebAssembly. Because Earshot ships this code, all of Earshot is licensed GPL-3.0-or-later. <a href="https://github.com/espeak-ng/espeak-ng">espeak-ng/espeak-ng on GitHub</a></p>
+  </section>
+
+  <section class="card" aria-labelledby="deps-h">
+    <h2 id="deps-h">Libraries that come with those projects</h2>
+    <p>These aren't starred themselves. They're what the starred projects above are built on, so they're bundled in this repository with their licenses.</p>
+    <h3>Transformers.js 4.2.0 (@huggingface/transformers)</h3>
+    <p>License: Apache-2.0. The in-browser model runtime that gemma4-browser-extension is built on. Bundled in vendor/transformers.</p>
+    <h3>ONNX Runtime Web 1.26 (onnxruntime-web)</h3>
+    <p>License: MIT. The WebAssembly engine inside Transformers.js. Its engine files are bundled in vendor/ort, so nothing is loaded from a CDN.</p>
+    <h3>phonemizer 1.2.1</h3>
+    <p>License: Apache-2.0 for the wrapper, with eSpeak NG (GPL-3.0) compiled inside. It's the WebAssembly build of the starred espeak-ng. Bundled in vendor/phonemizer.</p>
+  </section>
+
+  <section class="card" aria-labelledby="models-h">
+    <h2 id="models-h">Models downloaded when you press Load voices</h2>
+    <p>These are never stored in the repository. Your browser downloads them from Hugging Face, and only after you press Load voices.</p>
+    <ul>
+      <li>Kokoro 82M v1.0 (hexgrad/Kokoro-82M, Apache-2.0), ONNX build onnx-community/Kokoro-82M-v1.0-ONNX</li>
+      <li>Whisper Tiny English and Base English (OpenAI, MIT), ONNX builds from onnx-community</li>
+      <li>Distil-Whisper Small English (Hugging Face, MIT), ONNX build onnx-community/distil-small.en</li>
+      <li>all-MiniLM-L6-v2 (sentence-transformers, Apache-2.0), ONNX build Xenova/all-MiniLM-L6-v2</li>
+      <li>Granite 4.0 350M (IBM, Apache-2.0), ONNX build onnx-community/granite-4.0-350m-ONNX-web</li>
+    </ul>
+  </section>
+
+  <section class="card" aria-labelledby="own-h">
+    <h2 id="own-h">Earshot's own code</h2>
+    <p>The player, the VoiceOver mode, the live-region rules, the passage finder, the voice commands and the Kokoro glue are new code, written for this project. License: GPL-3.0-or-later. The full upstream license texts are in the NOTICE file and the vendor folders.</p>
+    <p><a href="https://github.com/2three1y/earshot">Source on GitHub</a></p>
+  </section>
+</main>
+<footer class="site-footer"><p>Made by Carter (2three1y) from starred repos.</p></footer>
+</body>
+</html>

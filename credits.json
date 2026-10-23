@@ -1,0 +1,99 @@
+{
+  "project": "Earshot",
+  "author": "Carter (2three1y)",
+  "license": "GPL-3.0-or-later",
+  "credits": [
+    {
+      "name": "gemma4-browser-extension",
+      "repo": "https://github.com/nico-martin/gemma4-browser-extension",
+      "author": "Nico Martin",
+      "license": "MIT",
+      "used_for": "the in-browser Transformers.js approach, worker pattern, and model choices (all-MiniLM-L6-v2 for matching, Granite 4.0 350M for answers)",
+      "notice": "MIT text in NOTICE",
+      "starred": "checked Oct 23, 2026"
+    },
+    {
+      "name": "kokoro-tts-addon",
+      "repo": "https://github.com/pinguy/kokoro-tts-addon",
+      "author": "pinguy",
+      "license": "Apache-2.0",
+      "used_for": "Kokoro 82M offline neural voice idea and the featured voice list",
+      "notice": "Apache-2.0 text in NOTICE",
+      "starred": "checked Oct 23, 2026"
+    },
+    {
+      "name": "whisper",
+      "repo": "https://github.com/openai/whisper",
+      "author": "OpenAI",
+      "license": "MIT",
+      "used_for": "speech recognition models (Tiny English, Base English), downloaded at runtime as ONNX",
+      "notice": "MIT text in NOTICE",
+      "starred": "checked Oct 23, 2026"
+    },
+    {
+      "name": "distil-whisper",
+      "repo": "https://github.com/huggingface/distil-whisper",
+      "author": "Hugging Face",
+      "license": "MIT",
+      "used_for": "Distil-Whisper Small English, downloaded at runtime as ONNX",
+      "notice": "MIT text in NOTICE",
+      "starred": "checked Oct 23, 2026"
+    },
+    {
+      "name": "espeak-ng",
+      "repo": "https://github.com/espeak-ng/espeak-ng",
+      "author": "eSpeak NG contributors",
+      "license": "GPL-3.0-or-later",
+      "used_for": "text to phonemes for the Kokoro voice (WebAssembly build)",
+      "notice": "GPL-3.0 text in LICENSE and vendor/phonemizer/ESPEAK-NG-COPYING; makes Earshot GPL-3.0-or-later",
+      "starred": "checked Oct 23, 2026"
+    }
+  ],
+  "bundled_dependencies": [
+    {
+      "name": "@huggingface/transformers",
+      "version": "4.2.0",
+      "license": "Apache-2.0",
+      "why": "the runtime nico-martin/gemma4-browser-extension is built on"
+    },
+    {
+      "name": "onnxruntime-web",
+      "version": "1.26.0-dev.20260416-b7804b056c",
+      "license": "MIT",
+      "why": "the WebAssembly engine inside Transformers.js"
+    },
+    {
+      "name": "phonemizer",
+      "version": "1.2.1",
+      "license": "Apache-2.0 wrapper with GPL-3.0 eSpeak NG",
+      "why": "the WebAssembly build of the starred espeak-ng"
+    }
+  ],
+  "runtime_models": [
+    {
+      "id": "onnx-community/Kokoro-82M-v1.0-ONNX",
+      "license": "Apache-2.0",
+      "source": "hexgrad/Kokoro-82M"
+    },
+    {
+      "id": "onnx-community/whisper-tiny.en",
+      "license": "MIT"
+    },
+    {
+      "id": "onnx-community/whisper-base.en",
+      "license": "MIT"
+    },
+    {
+      "id": "onnx-community/distil-small.en",
+      "license": "MIT"
+    },
+    {
+      "id": "Xenova/all-MiniLM-L6-v2",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "onnx-community/granite-4.0-350m-ONNX-web",
+      "license": "Apache-2.0"
+    }
+  ]
+}

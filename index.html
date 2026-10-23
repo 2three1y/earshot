@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Earshot: an offline talking reader and assistant</title>
+<meta name="description" content="Earshot reads anything aloud with natural neural voices, listens with Whisper, and answers questions about your text. Runs in your browser, offline, no account.">
+<meta name="theme-color" content="#14161f">
+<meta property="og:title" content="Earshot: an offline talking reader and assistant">
+<meta property="og:description" content="Read anything aloud with neural voices, talk to it, and ask about the text. Everything runs on your device.">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="styles.css">
+<script type="module" src="js/app.js"></script>
+</head>
+<body>
+<a class="skip" href="#player-h">Skip to the player</a>
+<header class="site-header">
+  <h1>Earshot</h1>
+  <p class="tagline">Reads anything aloud, listens when you talk, and answers questions about your text. It all runs on your device. No account, no cloud.</p>
+  <p id="engine-status" class="status-line">Reading with your device's voice. Neural voices aren't loaded.</p>
+</header>
+
+<main id="main">
+  <section class="card" aria-labelledby="player-h">
+    <h2 id="player-h" tabindex="-1">Player</h2>
+    <p id="now-title" class="now-title">Nothing loaded yet. Paste text, open a file, or fetch a page below. You can also load the welcome sample.</p>
+    <div class="big-controls">
+      <button type="button" id="btn-read" class="big primary">Read</button>
+      <button type="button" id="btn-pause" class="big">Pause</button>
+      <button type="button" id="btn-stop" class="big">Stop</button>
+    </div>
+    <p class="hint">Pause holds your place. Stop goes back to the start.</p>
+    <div class="nav-controls">
+      <button type="button" id="btn-prev-p">Previous paragraph</button>
+      <button type="button" id="btn-prev-s">Back one sentence</button>
+      <button type="button" id="btn-next-s">Next sentence</button>
+      <button type="button" id="btn-next-p">Next paragraph</button>
+      <button type="button" id="btn-where">Where am I?</button>
+    </div>
+
+    <div class="field">
+      <label for="speed">Speed</label>
+      <div class="range-row">
+        <input type="range" id="speed" min="0.5" max="2" step="0.1" value="1" aria-valuetext="1 times">
+        <span id="speed-out" class="range-value" aria-hidden="true">1.0×</span>
+      </div>
+    </div>
+
+    <fieldset class="field">
+      <legend>Who reads</legend>
+      <div class="choice"><input type="radio" name="engine" id="engine-neural" value="neural"><label for="engine-neural">Earshot's neural voice (Kokoro). Load it under Load voices first.</label></div>
+      <div class="choice"><input type="radio" name="engine" id="engine-device" value="device" checked><label for="engine-device">Your device's voice (Web Speech)</label></div>
+      <div class="choice"><input type="radio" name="engine" id="engine-vo" value="vo"><label for="engine-vo">VoiceOver's own voice (Earshot moves focus, your screen reader reads)</label></div>
+    </fieldset>
+
+    <div class="field" id="neural-voice-field">
+      <label for="neural-voice">Neural voice</label>
+      <select id="neural-voice"></select>
+    </div>
+    <div class="field" id="device-voice-field">
+      <label for="device-voice">Device voice</label>
+      <select id="device-voice"><option value="">Default voice</option></select>
+    </div>
+    <button type="button" id="btn-preview">Preview this voice</button>
+
+    <h3 class="sub">Now reading</h3>
+    <p id="now-reading" class="now-reading">Nothing yet.</p>
+    <audio id="audio" preload="auto"></audio>
+  </section>
+
+  <section class="card" aria-labelledby="source-h">
+    <h2 id="source-h" tabindex="-1">Text to read</h2>
+    <h3 class="sub">Paste or type</h3>
+    <div class="field">
+      <label for="paste">Text</label>
+      <textarea id="paste" rows="7" spellcheck="false"></textarea>
+    </div>
+    <div class="row">
+      <button type="button" id="btn-use-paste" class="primary">Use this text</button>
+      <button type="button" id="btn-sample">Load the welcome sample</button>
+      <button type="button" id="btn-resume" hidden>Resume where I left off</button>
+    </div>
+
+    <h3 class="sub">Open a file</h3>
+    <div class="field">
+      <label for="file">Choose a text, Markdown or web page file (.txt, .md, .html)</label>
+      <input type="file" id="file" accept=".txt,.md,.markdown,.html,.htm,text/plain,text/markdown,text/html">
+    </div>
+
+    <h3 class="sub">Read a web page</h3>
+    <div class="field">
+      <label for="url">Web address</label>
+      <input type="url" id="url" inputmode="url" autocomplete="url" placeholder="https://">
+    </div>
+    <button type="button" id="btn-fetch">Fetch page</button>
+    <p class="hint">This only works when the site allows other pages to read it (called CORS). Wikipedia articles and GitHub project pages work. For other sites, copy the page text and paste it above.</p>
+  </section>
+
+  <section class="card" aria-labelledby="reader-h">
+    <h2 id="reader-h" tabindex="-1">The text</h2>
+    <p id="doc-meta">No text loaded.</p>
+    <div id="doc" class="doc"></div>
+  </section>
+
+  <section class="card" aria-labelledby="talk-h">
+    <h2 id="talk-h" tabindex="-1">Talk to Earshot</h2>
+    <p class="hint">Press Talk and speak. Press it again when you're done, or just stop talking. Try “read”, “pause”, “faster”, “what is this about?”, or ask a question about the text.</p>
+    <button type="button" id="btn-talk" class="big primary" aria-pressed="false">Talk</button>
+    <p id="listen-status" class="status-line">Listening uses your device's speech recognition, which may send audio to Apple or Google. Load Whisper under Load voices to keep it on your device.</p>
+    <form id="say-form" class="row" autocomplete="off">
+      <div class="field grow">
+        <label for="say">Or type to Earshot</label>
+        <input type="text" id="say" enterkeyhint="send">
+      </div>
+      <button type="submit">Send</button>
+    </form>
+    <h3 class="sub">Conversation</h3>
+    <ol id="convo" class="convo"></ol>
+    <button type="button" id="btn-clear-convo">Clear conversation</button>
+  </section>
+
+  <section class="card" aria-labelledby="ask-h">
+    <h2 id="ask-h" tabindex="-1">Ask about the text</h2>
+    <p id="answer-mode" class="hint">How answers work right now: Earshot finds the passage that best matches your question and reads it to you. It's a keyword search on your device, so it never makes things up, but it can't explain in its own words. Turn on smarter matching or answers in its own words under Load voices.</p>
+    <form id="ask-form" class="row" autocomplete="off">
+      <div class="field grow">
+        <label for="question">Your question</label>
+        <input type="search" id="question" enterkeyhint="search">
+      </div>
+      <button type="submit" class="primary">Ask</button>
+    </form>
+    <h3 class="sub">Answer</h3>
+    <div id="answer" class="answer"><p>Ask something once a text is loaded.</p></div>
+    <h3 class="sub">Other matching passages</h3>
+    <ol id="matches" class="matches"></ol>
+  </section>
+
+  <section class="card" aria-labelledby="models-h">
+    <h2 id="models-h" tabindex="-1">Load voices</h2>
+    <p>These models run on your device. The first time, your browser downloads them from Hugging Face. After that they're saved in your browser and work offline. Nothing you read or say is uploaded.</p>
+    <fieldset class="field">
+      <legend>Choose what to download</legend>
+      <div class="choice"><input type="checkbox" id="m-tts" checked><label for="m-tts">Neural voice: Kokoro 82M, 28 English voices (about 93 MB)</label></div>
+      <div class="choice"><input type="checkbox" id="m-stt" checked><label for="m-stt">Speech recognition: Whisper</label></div>
+      <div class="field indent">
+        <label for="m-stt-model">Whisper model</label>
+        <select id="m-stt-model">
+          <option value="onnx-community/whisper-tiny.en">Tiny English, fastest (about 73 MB)</option>
+          <option value="onnx-community/whisper-base.en">Base English, more accurate (about 131 MB)</option>
+          <option value="onnx-community/distil-small.en">Distil-Whisper Small English, most accurate, best on a computer (about 252 MB)</option>
+        </select>
+      </div>
+      <div class="choice"><input type="checkbox" id="m-embed"><label for="m-embed">Smarter question matching by meaning: MiniLM (about 23 MB)</label></div>
+      <div class="choice"><input type="checkbox" id="m-llm"><label for="m-llm" id="m-llm-label">Answers in its own words: Granite 4.0 350M (about 350 MB, needs WebGPU)</label></div>
+    </fieldset>
+    <p id="size-warning" class="warning">Download size: about 150 MB. Use Wi-Fi. Phones may need a minute to get ready.</p>
+    <button type="button" id="btn-load" class="big primary">Load voices</button>
+    <div id="load-box" class="load-box" hidden>
+      <label for="prog" id="prog-label">Download progress</label>
+      <progress id="prog" max="100" value="0"></progress>
+      <p id="prog-text"></p>
+    </div>
+    <button type="button" id="btn-forget">Delete downloaded models from this browser</button>
+  </section>
+
+  <section class="card" aria-labelledby="settings-h">
+    <h2 id="settings-h" tabindex="-1">Settings</h2>
+    <div class="choice"><input type="checkbox" id="s-shortcuts" checked><label for="s-shortcuts">Keyboard shortcuts</label></div>
+    <div class="choice"><input type="checkbox" id="s-announce" checked><label for="s-announce">Status updates for screen readers (short, polite, and held back while Earshot is talking)</label></div>
+    <div class="choice"><input type="checkbox" id="s-autostop" checked><label for="s-autostop">Stop listening when I stop talking</label></div>
+    <div class="choice"><input type="checkbox" id="s-earcons" checked><label for="s-earcons">Play a short tone when listening starts and stops</label></div>
+    <div class="choice"><input type="checkbox" id="s-follow" checked><label for="s-follow">Highlight and scroll to the paragraph being read</label></div>
+  </section>
+
+  <section class="card" aria-labelledby="keys-h">
+    <h2 id="keys-h" tabindex="-1">Keyboard shortcuts</h2>
+    <p>Shortcuts work when you're not typing in a text box. Escape works everywhere.</p>
+    <ul class="keys">
+      <li><kbd>K</kbd>: Read or pause</li>
+      <li><kbd>S</kbd>: Stop</li>
+      <li><kbd>Escape</kbd>: Stop talking or listening</li>
+      <li><kbd>J</kbd> and <kbd>L</kbd>: Back or forward one sentence</li>
+      <li><kbd>P</kbd> and <kbd>N</kbd>: Previous or next paragraph</li>
+      <li><kbd>-</kbd> and <kbd>=</kbd>: Slower or faster</li>
+      <li><kbd>T</kbd>: Talk (start or stop listening)</li>
+      <li><kbd>A</kbd>: Jump to the question box</li>
+      <li><kbd>W</kbd>: Where am I?</li>
+      <li><kbd>?</kbd>: Jump to this list</li>
+    </ul>
+  </section>
+
+  <section class="card" aria-labelledby="about-h">
+    <h2 id="about-h" tabindex="-1">About Earshot</h2>
+    <p>Earshot is a mashup of open-source projects from Carter's GitHub stars. Neural speech is Kokoro 82M. Listening is OpenAI's Whisper or Distil-Whisper. Both run in your browser through Transformers.js and ONNX Runtime Web. Kokoro's pronunciation comes from eSpeak NG.</p>
+    <p>Honest limits: the neural models are big for phones. On an iPhone, the first sentence can take a few seconds to start. Your device's voice and VoiceOver mode work instantly with no download. Web pages only load when the site allows it.</p>
+    <p><a href="credits.html">Starred credits and licenses</a></p>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <p>Made by Carter (2three1y) from starred repos. <a href="credits.html">Starred credits</a>. <a href="https://github.com/2three1y/earshot">Source on GitHub</a>. Licensed GPL-3.0-or-later.</p>
+</footer>
+
+<div id="announcer" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+ "name": "Earshot",
+ "short_name": "Earshot",
+ "description": "Offline talking reader and assistant",
+ "start_url": "./",
+ "scope": "./",
+ "display": "standalone",
+ "background_color": "#14161f",
+ "theme_color": "#14161f",
+ "icons": [
+  {
+   "src": "icon.svg",
+   "sizes": "any",
+   "type": "image/svg+xml"
+  }
+ ]
+}

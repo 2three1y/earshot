@@ -1,0 +1,54 @@
+{
+ "version": "1.26.0-dev.20260416-b7804b056c",
+ "plain": {
+  "mjs": "ort-wasm-simd-threaded.mjs",
+  "size": 12942611,
+  "sha256": "f4f290847a4df02d0b93cdbf39b4b0e71acefbe80573e7e6b9342a7abd7b290a",
+  "parts": [
+   "part-00.bin",
+   "part-01.bin",
+   "part-02.bin",
+   "part-03.bin",
+   "part-04.bin",
+   "part-05.bin",
+   "part-06.bin",
+   "part-07.bin",
+   "part-08.bin",
+   "part-09.bin",
+   "part-10.bin",
+   "part-11.bin",
+   "part-12.bin"
+  ]
+ },
+ "asyncify": {
+  "mjs": "ort-wasm-simd-threaded.asyncify.mjs",
+  "size": 23567050,
+  "sha256": "e0c0c6d3e73d43b8a249972f8358f845b08cc16fec3c80efafdf8bed40366786",
+  "parts": [
+   "part-00.bin",
+   "part-01.bin",
+   "part-02.bin",
+   "part-03.bin",
+   "part-04.bin",
+   "part-05.bin",
+   "part-06.bin",
+   "part-07.bin",
+   "part-08.bin",
+   "part-09.bin",
+   "part-10.bin",
+   "part-11.bin",
+   "part-12.bin",
+   "part-13.bin",
+   "part-14.bin",
+   "part-15.bin",
+   "part-16.bin",
+   "part-17.bin",
+   "part-18.bin",
+   "part-19.bin",
+   "part-20.bin",
+   "part-21.bin",
+   "part-22.bin",
+   "part-23.bin"
+  ]
+ }
+}
