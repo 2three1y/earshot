@@ -4,7 +4,7 @@ A talking reader and assistant that runs in your browser. It reads anything alou
 
 Live: https://2three1y.github.io/earshot/
 
-Made by Carter (2three1y) from repos in his GitHub stars.
+I made this from repos in my GitHub stars. Carter (2three1y).
 
 ## What it does
 
